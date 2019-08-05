@@ -1,3 +1,15 @@
+import smtplib, ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+sender_email = "harshithaphaniwedding@gmail.com"
+password = "Arunkiran1@"
+
+
+def sendmail(recepient, receiver_email):
+
+    # Create the plain-text and HTML version of your message
+    html = """\
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" style="background:#f1f1f1;margin:0 auto ;padding:0 ;height:100% ;width:100% ;">
   <head></head>
@@ -512,3 +524,48 @@
     </center>
   </body>
 </html>
+    """
+
+    html = html.replace("_$$$_", recepient)
+
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Before the wedding..."
+    message["From"] = sender_email
+    message["To"] = receiver_email
+
+    # Turn these into plain/html MIMEText objects
+    part2 = MIMEText(html, "html")
+
+    # Add HTML/plain-text parts to MIMEMultipart message
+    # The email client will try to render the last part first
+    message.attach(part2)
+
+    # Create secure connection with server and send email
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+        server.login(sender_email, password)
+        server.sendmail(
+            sender_email, receiver_email, message.as_string()
+        )
+
+
+mailer_list = {"i.arun.subramanian@gmail.com" : "Arun",
+               "Abhimanyuselvan@gmail.com" : "Abhi & Pinky",
+               "adithya.pulli@gmail.com" : "Adi & Suma",
+               "antygan@gmail.com" : "Ananatha & Ankita",
+               "talwar.avii@gmail.com" : "Jatin & Sonja",
+               "bommareddy.kh@gmail.com" : "Harshini & Varun",
+               "Phani.p3@gmail.com" : "Pawan",
+               "r.kpooja12@gmail.com" : "Pooja",
+               "rajeevbreddy@gmail.com" : "Rajeev & Pooja",
+               "sumedh105@gmail.com" : "Sumedh & Ketki",
+               "vg.karunanithi@gmail.com" : "Vikku, Vidhya & Mrudu",
+               "vik1124@gmail.com" : "Vikram",
+               "vishu991@gmail.com" : "Vishu & Sneha",
+               "vladmihaisima@gmail.com" : "Vlad-Mihai & Alexandra",
+               "sachin.singare@gmail.com" : "Sachin",
+               "mcakshar.2351@gmail.com" : "Akshar"
+               }
+
+for e, r in mailer_list.items():
+    sendmail(r, e)
